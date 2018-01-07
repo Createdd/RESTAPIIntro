@@ -6,7 +6,7 @@ const jsonParser = require('body-parser').json;
 const logger = require('morgan');
 const mongoose = require('mongoose');
 
-mongoose.connect('mongodb://localhost:27017/QA');
+mongoose.connect('mongodb://localhost:27017/QA', {useMongoClient: true,});
 const db = mongoose.connection;
 
 db.on('error', err => {
@@ -22,10 +22,11 @@ app.use((req, res, next) => {
     'Access-Control-Allow-Headers',
     'Origin, X-Requested-With, Content-Type, Accept'
   );
-  if (req.method === 'Options') {
+  if (req.method === 'OPTIONS') {
     res.header('Access-Control-Allow-Methods', 'PUT, POST, DELETE');
     return res.status(200).json({});
   }
+  next();
 });
 app.use(logger('dev'));
 app.use(jsonParser());
